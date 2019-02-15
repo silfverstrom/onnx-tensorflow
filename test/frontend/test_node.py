@@ -186,6 +186,7 @@ if not legacy_opset_pre_ver(9):
   test_cases.append(("test_is_nan", tf.is_nan, "IsNan", [[[1.0, 3.0, 5.0], [6.0, np.nan, 0.0], [np.nan, 11.0, 12.0]]], {}))
   test_cases.append(("test_sign", tf.sign, "Sign", [get_rnd([10, 10], -10, 10)], {}))
   test_cases.append(("test_erf", tf.erf, "Erf", [get_rnd([2, 3, 8])], {}))
+  test_cases.append(("test_space_to_batch_nd", tf.space_to_batch_nd, "SpaceToBatchND", [[[[[1], [2]], [[3], [4]]]], [2, 2], [[1, 1], [0, 0]]], {}))
 
 # yapf: enable
 
