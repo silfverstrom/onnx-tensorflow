@@ -187,9 +187,12 @@ if not legacy_opset_pre_ver(9):
   test_cases.append(("test_sign", tf.sign, "Sign", [get_rnd([10, 10], -10, 10)], {}))
   test_cases.append(("test_erf", tf.erf, "Erf", [get_rnd([2, 3, 8])], {}))
   test_cases.append(("test_space_to_batch_nd", tf.space_to_batch_nd, "SpaceToBatchND", [[[[[1], [2]], [[3], [4]]]], [2, 2], [[1, 1], [0, 0]]], {}))
+  test_cases.append(("test_space_to_batch_nd_1", tf.space_to_batch_nd, "SpaceToBatchND", [get_rnd([1, 2, 2, 1]), [2, 2], [[0, 0], [0, 0]]], {}))
+  test_cases.append(("test_space_to_batch_nd_2", tf.space_to_batch_nd, "SpaceToBatchND", [get_rnd([1, 2, 2, 3]), [2, 2], [[0, 0], [0, 0]]], {}))
+  test_cases.append(("test_space_to_batch_nd_3", tf.space_to_batch_nd, "SpaceToBatchND", [get_rnd([1, 4, 4, 1]), [2, 2], [[0, 0], [0, 0]]], {}))
+  test_cases.append(("test_space_to_batch_nd_4", tf.space_to_batch_nd, "SpaceToBatchND", [get_rnd([2, 2, 4, 1]), [2, 2], [[0, 0], [2, 0]]], {}))
 
 # yapf: enable
-
 for k, val in enumerate(test_cases):
   test_method = create_test(val)
   test_method.__name__ = str(val[0])
