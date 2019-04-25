@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 from onnx_tf.common import get_data_format
 from onnx_tf.common import get_perm_from_formats
@@ -59,14 +60,26 @@ class ConvMixin(BroadcastMixin):
 
     group = node.attrs.get("group", 1)
 
-    weight_groups = tf.split(weights, num_or_size_splits=group, axis=-1)
+    sess = tf.Session()
+    #(1, 5, 5, 3, 8) to (5,5,3,8)
+    weight_groups = tf.split(weights, num_or_size_splits=group, axis=1)
+    xi = sess.run(weights)
+    xi = np.array([xi])
+    print(xi.shape)
+    weight_groups = tf.convert_to_tensor(xi)
 
     if support_cuda:
       xs = tf.split(x, num_or_size_splits=group, axis=1)
     else:
       x = tf.transpose(
           x, perm=get_perm_from_formats(storage_format, compute_format))
-      xs = tf.split(x, num_or_size_splits=group, axis=-1)
+      xs = x
+      # xs = tf.split(x, num_or_size_splits=group, axis=1)
+      #xs = np.array([xs])
+      #print("MJAU", xs)
+      #xs = tf.convert_to_tensor(xs)
+      #xs = x
+      #xs = x
 
     if transpose:
       if dilations != [1] * spatial_size:
@@ -139,17 +152,23 @@ class ConvMixin(BroadcastMixin):
 
         convolved.append(conv_rs)
     else:
+      sess = tf.Session()
+      wgs = sess.run(weight_groups)
+      xsg = xs
+      #xsg = sess.run(xs)
+      xi = [xsg, wgs[0]]
+      #xi = zip(xsg, wgs)
       convolved = [
           tf.nn.convolution(
-              x,
-              weight,
+              xsg,
+              wgs[0],
               "VALID",
               strides=strides,
               dilation_rate=dilations,
               data_format=compute_format)
-          for (x, weight) in zip(xs, weight_groups)
       ]
 
+    print("NODES ARE ", len(node.inputs), len(convolved))
     if len(node.inputs) == 2:
       if support_cuda:
         output = tf.concat(convolved, axis=1)
