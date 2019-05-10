@@ -219,14 +219,9 @@ class TensorflowBackend(Backend):
       Tensorflow op
     """
     handlers = handlers or cls._get_handlers(opset)
-    print("DOMAIN", node.op_type)
+    print("DOMAIN!", node.op_type, node.domain);
     handler = handlers[node.domain].get(node.op_type, None)
     if handler:
-      if (node.op_type == 'AveragePool'):
-        pass
-        #handler = handlers[node.domain].get('Relu', None)
-
-
       return handler.handle(node, tensor_dict=tensor_dict, strict=strict)
     else:
       exception.OP_UNIMPLEMENTED_EXCEPT(node.op_type)
