@@ -219,6 +219,7 @@ class TensorflowBackend(Backend):
       Tensorflow op
     """
     handlers = handlers or cls._get_handlers(opset)
+    print("DOMAIN!", node.op_type, node.domain);
     handler = handlers[node.domain].get(node.op_type, None)
     if handler:
       return handler.handle(node, tensor_dict=tensor_dict, strict=strict)
